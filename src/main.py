@@ -5,10 +5,19 @@
 # Contributors:
 #     Jeanderson Candido <http://jeandersonbc.github.io>
 #
+import random
+
 _alpha = 3
 _beta = 2
 _rho = 0.01
 _Q = 2.0
+
+def display(matrix):
+    """ Displays a matrix """
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            print "%4.2f\t" %matrix[i][j],
+        print ""
 
 def init_pheromones(numCities):
     pass
@@ -22,17 +31,64 @@ def update_pheromones(pheromones, ants, dists):
 def best_trail(ants, dists):
     pass
 
-def length(bestTrail, dists):
-    pass
+def distance(cityX, cityY, dists):
+    return dists[cityX][cityY]
+
+def length(trail, dists):
+    result = 0.0
+    for i in range(len(trail)-1):
+        result += distance(trail[i], trail[i+1], dists)
+
+    return result
+
+def random_trail(start, numCities):
+    trail = range(numCities)
+
+    # Shuffle
+    for i in range(numCities):
+        r = random.randint(i, numCities-1)
+        tmp = trail[r]
+        trail[r] = trail[i]
+        trail[i] = tmp
+
+    # Start at 0
+    idx = trail.index(start)
+    tmp = trail[0]
+    trail[0] = trail[idx]
+    trail[idx] = tmp
+
+    return trail
 
 def init_ants(numAnts, numCities):
-    pass
+    ants = [[] for r in range(numAnts)]
+    for k in range(numAnts):
+        start = random.randint(0, numCities-1)
+        ants[k] = random_trail(start, numCities)
+
+    return ants
 
 def show_ants(ants, dists):
-    pass
+    for i in range(len(ants)):
+        print i, ":[",
+        for j in range(4):
+            print "%3d" %ants[i][j],
+        print "...",
+        for j in range(len(ants[i])-4, len(ants[i])):
+            print "%3d" "%3d" %%ants[i][j],
+        print "] len =", length(ants[i], dists)
 
 def make_graph_distances(numCities):
-    pass
+    dists = [[] for r in range(numCities)]
+    for i in range(len(dists)):
+        dists[i] = [0 for k in range(numCities)]
+    for i in range(len(dists)):
+        for j in range(i+1, numCities):
+            d = random.randint(1,8)
+            dists[i][j] = d
+            dists[j][i] = d
+
+    return dists
+
 
 if __name__ == "__main__":
     print "Beginning Ant Colony Optimization demo\n"
@@ -76,7 +132,7 @@ if __name__ == "__main__":
             print "New best length of %.2f at time %d" %(bestLength, i)
 
     print "Best trail found:"
-    print bestTrail
+    display(bestTrail)
     print "Best length: %.2f\n" %(bestLength)
 
     print "Ant Colony Optimization demo done"
