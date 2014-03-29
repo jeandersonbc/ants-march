@@ -12,12 +12,14 @@ _beta = 2
 _rho = 0.01
 _Q = 2.0
 
-def display(matrix):
-    """ Displays a matrix """
-    for i in range(len(matrix)):
-        for j in range(len(matrix[i])):
-            print "%4.2f\t" %matrix[i][j],
-        print ""
+def display_trail(trail):
+    for i in range(len(trail)):
+        if i % 20 == 0: print ""
+        print trail[i],
+    print ""
+
+def display():
+    pass
 
 def init_pheromones(numCities):
     pass
@@ -29,7 +31,15 @@ def update_pheromones(pheromones, ants, dists):
     pass
 
 def best_trail(ants, dists):
-    pass
+    bestLength = length(ants[0], dists)
+    idxBestLen = 0
+    for k in range(1, len(ants)):
+        otherLen = length(ants[k], dists)
+        if otherLen < bestLength:
+            bestLength = otherLen
+            idxBestLen = k
+
+    return ants[idxBestLen]
 
 def distance(cityX, cityY, dists):
     return dists[cityX][cityY]
@@ -68,14 +78,16 @@ def init_ants(numAnts, numCities):
     return ants
 
 def show_ants(ants, dists):
+    print ""
     for i in range(len(ants)):
         print i, ":[",
         for j in range(4):
             print "%3d" %ants[i][j],
         print "...",
         for j in range(len(ants[i])-4, len(ants[i])):
-            print "%3d" "%3d" %%ants[i][j],
+            print "%3d" %ants[i][j],
         print "] len =", length(ants[i], dists)
+    print ""
 
 def make_graph_distances(numCities):
     dists = [[] for r in range(numCities)]
@@ -124,15 +136,15 @@ if __name__ == "__main__":
     for i in range(maxTime):
         update_ants(ants, pheromones, dists)
         update_pheromones(pheromones, ants, dists)
-        currentBestTrail = bestTrail(ants, dists)
-        currentBestLength = bestLength(currentBestTrail, dists)
+        currentBestTrail = best_trail(ants, dists)
+        currentBestLength = length(currentBestTrail, dists)
         if currentBestLength < bestLength:
             bestLength = currentBestLength
             bestTrail = currentBestTrail
             print "New best length of %.2f at time %d" %(bestLength, i)
 
     print "Best trail found:"
-    display(bestTrail)
+    display_trail(bestTrail)
     print "Best length: %.2f\n" %(bestLength)
 
-    print "Ant Colony Optimization demo done"
+    print "Ant Colony Optimization demo finished!"
