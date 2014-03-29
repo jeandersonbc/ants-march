@@ -15,8 +15,8 @@ _Q = 2.0
 def display_trail(trail):
     for i in range(len(trail)):
         if i % 20 == 0: print ""
-        print trail[i],
-    print ""
+        print "%3d" %trail[i],
+    print "\n"
 
 def move_probs(k, cityX, visited, pheromones, dists):
     numCities = len(pheromones)
