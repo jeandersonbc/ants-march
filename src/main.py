@@ -18,14 +18,65 @@ def display_trail(trail):
         print trail[i],
     print ""
 
-def display():
-    pass
+def move_probs(k, cityX, visited, pheromones, dists):
+    numCities = len(pheromones)
+    probs = [0.0 for i in range(numCities)]
+    total = 0.0
+    for i in range(len(probs)):
+        if i == cityX or visited[i]:
+            probs[i] = 0.0
+        else:
+            probs[i] = pow(pheromones[cityX][i], _alpha) \
+                        * pow((1.0 / distance(cityX, i, dists)), _beta)
+            if probs[i] < 0.0001:
+                probs[i] = 0.0001
+            elif probs[i] > (1.7976931348623157E+308 / (numCities * 100)):
+                probs[i] = (1.7976931348623157E+308 / (numCities * 100))
+        total += probs[i]
+
+    return [(probs[i] / total) for i in range(numCities)]
+
+def next_city(k, cityX, visited, pheromones, dists):
+    probs = move_probs(k, cityX, visited, pheromones, dists)
+    cumul = [0.0 for i in range(len(probs) + 1)]
+    for i in range(len(probs)):
+        cumul[i+1] = cumul[i] + probs[i]
+
+    p = random.random() 
+    for i in range(len(cumul)-1):
+        if (p >= cumul[i] and p < cumul[i+1]):
+            return i
+
+def build_trail(k, start, pheromones, dists):
+    numCities = len(pheromones)
+    trail = [0 for i in range(numCities)]
+    visited = [False for i in range(numCities)]
+
+    trail[0] = start
+    visited[start] = True
+    for i in range(numCities-1):
+        cityX = trail[i]
+        nextCity = next_city(k, cityX, visited, pheromones, dists)
+        trail[i+1] = nextCity
+        visited[nextCity] = True
+
+    return trail
 
 def init_pheromones(numCities):
-    pass
+    """ Initializes a matrix representing the pheromones. """
+    pheromones = [[0.0 for j in range(numCities)] for i in range(numCities)]
+    for i in range(len(pheromones)):
+        for j in range(len(pheromones)):
+            pheromones[i][j] = 0.01
+
+    return pheromones
 
 def update_ants(ants, pheromones, dists):
-    pass
+    numCities = len(pheromones)
+    for k in range(len(ants)):
+        start = random.randint(0, numCities-1)
+        newTrail = build_trail(k, start, pheromones, dists)
+        ants[k] = newTrail
 
 def update_pheromones(pheromones, ants, dists):
     pass
