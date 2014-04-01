@@ -8,14 +8,14 @@
 import random
 import time
 
+# Influence of pheromone on direction (alpha) and of
+# adjacent node distances (beta)
 _alpha = 3
 _beta = 2
+
+# Pheromone increase (rho) e decrease (Q) factors
 _rho = 0.01
 _Q = 2.0
-
-def fact(n):
-    if n == 1: return 1
-    return n * fact(n-1)
 
 def display_trail(trail):
     for i in range(len(trail)):
