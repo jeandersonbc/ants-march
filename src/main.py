@@ -6,11 +6,16 @@
 #     Jeanderson Candido <http://jeandersonbc.github.io>
 #
 import random
+import time
 
 _alpha = 3
 _beta = 2
 _rho = 0.01
 _Q = 2.0
+
+def fact(n):
+    if n == 1: return 1
+    return n * fact(n-1)
 
 def display_trail(trail):
     for i in range(len(trail)):
@@ -190,7 +195,16 @@ def make_graph_distances(numCities):
     return dists
 
 
+def fact(n):
+    """ Computes factorial.
+    This is not used in the AOC problem.
+    """
+    if n == 1:
+        return 1
+    return n * fact(n - 1)
+
 if __name__ == "__main__":
+    t1 = time.time()
     print "Beginning Ant Colony Optimization demo\n"
 
     numCities = 60
@@ -217,7 +231,7 @@ if __name__ == "__main__":
     bestLength = length(bestTrail, dists)
 
     print "Best initial trail length: %.2f" %(bestLength)
-    print "Initializing  pheromone on trails"
+    print "Initializing pheromone on trails"
     pheromones = init_pheromones(numCities)
 
     print "Starting..."
@@ -229,10 +243,20 @@ if __name__ == "__main__":
         if currentBestLength < bestLength:
             bestLength = currentBestLength
             bestTrail = currentBestTrail
-            print "New best length of %.2f at time %d" %(bestLength, i)
+            print "New best length of %3d at time %d" %(bestLength, i)
 
     print "Best trail found:"
     display_trail(bestTrail)
     print "Best length: %.2f\n" %(bestLength)
 
     print "Ant Colony Optimization demo finished!"
+    print "Elapsed Time: %.2f min(s)" %((time.time() - t1) / 60)
+
+    print ""
+    print "Hypothetical super computer"
+    print "1 * 10^60 possibilities per second"
+    print "N = %d cities" %numCities
+    tenTo60 = 1000000000000000000000000000000000000000000000000000000000000
+    result = fact(numCities-1) >> 1
+    print "(N-1)! / 2 = %d possibilities..." %(result)
+    print "Elapsed time: %d Years!" %(result / tenTo60 / 30758400)
