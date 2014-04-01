@@ -230,24 +230,26 @@ if __name__ == "__main__":
     bestTrail = best_trail(ants, dists)
     bestLength = length(bestTrail, dists)
 
-    print "Best initial trail length: %.2f" %(bestLength)
     print "Initializing pheromone on trails"
     pheromones = init_pheromones(numCities)
 
-    print "Starting..."
+    print "Starting...\n"
+    print "Length\tTime\tGain"
+    print "----------------------"
+    print "%3d\t-\t-" %(bestLength)
     for i in range(maxTime):
         update_ants(ants, pheromones, dists)
         update_pheromones(pheromones, ants, dists)
         currentBestTrail = best_trail(ants, dists)
         currentBestLength = length(currentBestTrail, dists)
         if currentBestLength < bestLength:
+            gain = bestLength - currentBestLength
             bestLength = currentBestLength
             bestTrail = currentBestTrail
-            print "New best length of %3d at time %d" %(bestLength, i)
+            print "%3d\t%d\t%d" %(bestLength, i, gain)
 
-    print "Best trail found:"
+    print "\nBest trail found:"
     display_trail(bestTrail)
-    print "Best length: %.2f\n" %(bestLength)
 
     print "Ant Colony Optimization demo finished!"
     print "Elapsed Time: %.2f min(s)" %((time.time() - t1) / 60)
@@ -259,4 +261,4 @@ if __name__ == "__main__":
     tenTo60 = 1000000000000000000000000000000000000000000000000000000000000
     result = fact(numCities-1) >> 1
     print "(N-1)! / 2 = %d possibilities..." %(result)
-    print "Elapsed time: %d Years!" %(result / tenTo60 / 30758400)
+    print "Required time: %d Years!" %(result / tenTo60 / 30758400)
