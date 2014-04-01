@@ -22,16 +22,18 @@ def move_probs(k, cityX, visited, pheromones, dists):
     numCities = len(pheromones)
     probs = [0.0 for i in range(numCities)]
     total = 0.0
+    upperBoundFactor = 1.7976931348623157E+308 / (numCities * 100)
+    lowerBoundFactor = 0.0001
     for i in range(len(probs)):
         if i == cityX or visited[i]:
             probs[i] = 0.0
         else:
             probs[i] = pow(pheromones[cityX][i], _alpha) \
                         * pow((1.0 / distance(cityX, i, dists)), _beta)
-            if probs[i] < 0.0001:
-                probs[i] = 0.0001
-            elif probs[i] > (1.7976931348623157E+308 / (numCities * 100)):
-                probs[i] = (1.7976931348623157E+308 / (numCities * 100))
+            if probs[i] < lowerBoundFactor:
+                probs[i] = lowerBoundFactor
+            elif probs[i] > upperBoundFactor:
+                probs[i] = upperBoundFactor
         total += probs[i]
 
     return [(probs[i] / total) for i in range(numCities)]
@@ -79,7 +81,42 @@ def update_ants(ants, pheromones, dists):
         ants[k] = newTrail
 
 def update_pheromones(pheromones, ants, dists):
-    pass
+    for i in range(len(pheromones)):
+        for j in range(i+1, len(pheromones[i])):
+            for k in range(len(ants)):
+                currLength = length(ants[k], dists)
+                decrease = (1.0 - _rho) * pheromones[i][j]
+                increase = 0.0
+                if edge_in_trail(i, j, ants[k]):
+                    increase = (_Q / currLength)
+                pheromones[i][j] = decrease + increase
+                if pheromones[i][j] < 0.001:
+                    pheromones[i][j] = 0.001
+                elif pheromones[i][j] > 100000.0:
+                    pheromones[i][j] = 100000.0
+                pheromones[j][i] = pheromones[i][j]
+
+def edge_in_trail(cityX, cityY, trail):
+    lastIndex = len(trail) - 1
+    idx = trail.index(cityX)
+    if (idx == 0 and trail[1] == cityY) \
+            or (idx == 0 and trail[lastIndex] == cityY):
+        return True
+
+    elif idx == 0:
+        return False
+
+    elif (idx == lastIndex and trail[lastIndex - 1] == cityY) \
+            or (idx == lastIndex and trail[0] == cityY):
+        return True
+
+    elif idx == lastIndex:
+        return False
+
+    elif trail[idx - 1] == cityY or trail[idx + 1] == cityY:
+        return True
+
+    return False
 
 def best_trail(ants, dists):
     bestLength = length(ants[0], dists)
