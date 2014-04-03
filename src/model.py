@@ -163,9 +163,9 @@ class AntColony:
 
         return trail
 
-    def init_ants(self, numAnts):
-        ants = [[] for r in range(numAnts)]
-        for k in range(numAnts):
+    def init_ants(self):
+        ants = [[] for r in range(self.__numAnts)]
+        for k in range(self.__numAnts):
             start = random.randint(0, self.__numCities-1)
             ants[k] = self.random_trail(start, self.__numCities)
 

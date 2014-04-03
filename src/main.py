@@ -25,7 +25,7 @@ def __experiment(numCities, numAnts, maxTime):
     dists = colony.make_graph_distances()
 
     print "Initializing ants at random trails"
-    ants = colony.init_ants(numAnts)
+    ants = colony.init_ants()
     colony.show_ants(ants, dists)
 
     bestTrail = colony.best_trail(ants, dists)
