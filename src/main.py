@@ -64,7 +64,8 @@ def __experiment(numCities, numAnts, maxTime, detailsEnabled=False):
         colony.display_trail(bestTrail)
         print "Ant Colony Optimization demo finished!"
 
-    print "%.2f msecs" %((time.time() - t1))
+    # length + time in seconds
+    print "%d\t%.2f" %(bestLength, (time.time() - t1))
 
 
 if __name__ == "__main__":
