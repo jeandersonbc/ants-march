@@ -6,33 +6,44 @@
 import random
 
 class AntColony:
+    """ Ant Colony Optmization to solve the Travelling Salesman Problem. """
 
-    def __init__(self, numCities, numAnts):
+    def __init__(self, nodes, population):
+        """ Initializes the properties of this Colony.
+
+        It setts the pheromones properties and also sets the size of the
+        graph and this population.
+        """
         # Pheromone properties
         self.__alpha = 3
         self.__beta = 2
         self.__rho = 0.01
         self.__Q = 2.0
 
-        self.__numCities = numCities
-        self.__numAnts = numAnts
+        self.__nodes = nodes
+        self.__population = numAnts
 
     def show_properties(self):
+        """ Prints the pheromone properties. """
+
         print "Pheromone influence (Alpha): %d" %(self.__alpha)
         print "Local node influence (Beta): %d" %(self.__beta)
         print "Pheromone evaporation coef (Rho): %.2f" %(self.__rho)
         print "Pheromone deposit factor (Q): %.2f\n" %(self.__Q)
 
     def display_trail(self, trail):
+        """ Prints the given trail. """
+
         for i in range(len(trail)):
             if i % 20 == 0: print ""
             print "%3d" %trail[i],
         print "\n"
 
     def init_pheromones(self):
-        """ Initializes a matrix representing the pheromones. """
+        """ Initializes and returns matrix representing the pheromones. """
+
         pheromones = [
-            [0.0 for j in range(self.__numCities)] for i in range(self.__numCities)
+            [0.0 for j in range(self.__nodes)] for i in range(self.__nodes)
         ]
         for i in range(len(pheromones)):
             for j in range(len(pheromones)):
@@ -41,12 +52,16 @@ class AntColony:
         return pheromones
 
     def update_ants(self, ants, pheromones, dists):
+        """ Updates the position of the colony. """
+
         for k in range(len(ants)):
-            start = random.randint(0, self.__numCities-1)
+            start = random.randint(0, self.__nodes-1)
             newTrail = self.__build_trail(k, start, pheromones, dists)
             ants[k] = newTrail
 
     def update_pheromones(self, pheromones, ants, dists):
+        """ Updates the pheromones in the field. """
+
         for i in range(len(pheromones)):
             for j in range(i+1, len(pheromones[i])):
                 for k in range(len(ants)):
@@ -63,6 +78,8 @@ class AntColony:
                     pheromones[j][i] = pheromones[i][j]
 
     def best_trail(self, ants, dists):
+        """ Returns the best trail among all trails from the Colony. """
+
         bestLength = self.length(ants[0], dists)
         idxBestLen = 0
         for k in range(1, len(ants)):
@@ -74,6 +91,8 @@ class AntColony:
         return ants[idxBestLen]
 
     def length(self, trail, dists):
+        """ Returns the lenght to the given trail. """
+
         result = 0.0
         for i in range(len(trail)-1):
             result += self.__distance(trail[i], trail[i+1], dists)
@@ -81,14 +100,18 @@ class AntColony:
         return result
 
     def init_ants(self):
-        ants = [[] for r in range(self.__numAnts)]
-        for k in range(self.__numAnts):
-            start = random.randint(0, self.__numCities-1)
+        """ Initializes and returns ants at random positions in the field. """
+
+        ants = [[] for r in range(self.__population)]
+        for k in range(self.__population):
+            start = random.randint(0, self.__nodes-1)
             ants[k] = self.__random_trail(start)
 
         return ants
 
     def show_ants(self, ants, dists):
+        """ Prints the colony and the associated trail for each ant. """
+
         print ""
         for i in range(len(ants)):
             print i, ":[",
@@ -101,20 +124,21 @@ class AntColony:
         print ""
 
     def make_graph_distances(self, max_dist=8):
-        dists = [[] for r in range(self.__numCities)]
+        """ Makes and return a matrix representing distances in the field. """
+        dists = [[] for r in range(self.__nodes)]
         for i in range(len(dists)):
-            dists[i] = [0 for k in range(self.__numCities)]
+            dists[i] = [0 for k in range(self.__nodes)]
         for i in range(len(dists)):
-            for j in range(i+1, self.__numCities):
+            for j in range(i+1, self.__nodes):
                 d = random.randint(1, max_dist)
                 dists[i][j] = dists[j][i] = d
 
         return dists
 
     def __move_probs(self, k, cityX, visited, pheromones, dists):
-        probs = [0.0 for i in range(self.__numCities)]
+        probs = [0.0 for i in range(self.__nodes)]
         total = 0.0
-        upperBoundFactor = 1.7976931348623157E+308 / (self.__numCities * 100)
+        upperBoundFactor = 1.7976931348623157E+308 / (self.__nodes * 100)
         lowerBoundFactor = 0.0001
         for i in range(len(probs)):
             if i == cityX or visited[i]:
@@ -128,7 +152,7 @@ class AntColony:
                     probs[i] = upperBoundFactor
             total += probs[i]
 
-        return [(probs[i] / total) for i in range(self.__numCities)]
+        return [(probs[i] / total) for i in range(self.__nodes)]
 
     def __next_city(self, k, cityX, visited, pheromones, dists):
         probs = self.__move_probs(k, cityX, visited, pheromones, dists)
@@ -142,12 +166,12 @@ class AntColony:
                 return i
 
     def __build_trail(self, k, start, pheromones, dists):
-        trail = [0 for i in range(self.__numCities)]
-        visited = [False for i in range(self.__numCities)]
+        trail = [0 for i in range(self.__nodes)]
+        visited = [False for i in range(self.__nodes)]
 
         trail[0] = start
         visited[start] = True
-        for i in range(self.__numCities-1):
+        for i in range(self.__nodes-1):
             cityX = trail[i]
             nextCity = self.__next_city(k, cityX, visited, pheromones, dists)
             trail[i+1] = nextCity
@@ -156,11 +180,11 @@ class AntColony:
         return trail
 
     def __random_trail(self, start):
-        trail = range(self.__numCities)
+        trail = range(self.__nodes)
 
         # Shuffle
-        for i in range(self.__numCities):
-            r = random.randint(i, self.__numCities-1)
+        for i in range(self.__nodes):
+            r = random.randint(i, self.__nodes-1)
             trail[r], trail[i] = trail[i], trail[r]
 
         # Start at 0
@@ -193,4 +217,3 @@ class AntColony:
             return True
 
         return False
-
