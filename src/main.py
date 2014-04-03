@@ -13,33 +13,40 @@ from sys import argv
 
 __EXPECTED_ARGS = 4
 
-def __experiment(numCities, numAnts, maxTime):
-    print "Beginning Ant Colony Optimization demo\n"
-    print "Number of cities: %d" %(numCities)
-    print "Number of ants: %d" %(numAnts)
-    print "Maximum time: %d\n" %(maxTime)
+def __experiment(numCities, numAnts, maxTime, detailsEnabled=False):
+    if detailsEnabled:
+        print "Beginning Ant Colony Optimization demo\n"
+        print "Number of cities: %d" %(numCities)
+        print "Number of ants: %d" %(numAnts)
+        print "Maximum time: %d\n" %(maxTime)
     colony = AntColony(numCities, numAnts)
-    colony.show_properties()
+    if detailsEnabled:
+        colony.show_properties()
 
     t1 = time.time()
 
-    print "Initializing dummy graph distances"
+    if detailsEnabled:
+        print "Initializing dummy graph distances"
     dists = colony.make_graph_distances()
 
-    print "Initializing ants at random trails"
+    if detailsEnabled:
+        print "Initializing ants at random trails"
     ants = colony.init_ants()
     colony.show_ants(ants, dists)
 
     bestTrail = colony.best_trail(ants, dists)
     bestLength = colony.length(bestTrail, dists)
 
-    print "Initializing pheromone on trails"
+    if detailsEnabled:
+        print "Initializing pheromone on trails"
     pheromones = colony.init_pheromones()
 
-    print "Starting...\n"
-    print "Length\tTime\tGain"
-    print "----------------------"
-    print "%3d\t-\t-" %(bestLength)
+    if detailsEnabled:
+        print "Starting...\n"
+        print "Length\tTime\tGain"
+        print "----------------------"
+        print "%3d\t-\t-" %(bestLength)
+
     for i in range(maxTime):
         colony.update_ants(ants, pheromones, dists)
         colony.update_pheromones(pheromones, ants, dists)
@@ -49,13 +56,15 @@ def __experiment(numCities, numAnts, maxTime):
             gain = bestLength - currentBestLength
             bestLength = currentBestLength
             bestTrail = currentBestTrail
-            print "%3d\t%d\t%d" %(bestLength, i, gain)
+            if detailsEnabled:
+                print "%3d\t%d\t%d" %(bestLength, i, gain)
 
-    print "\nBest trail found:"
-    colony.display_trail(bestTrail)
+    if detailsEnabled:
+        print "\nBest trail found:"
+        colony.display_trail(bestTrail)
+        print "Ant Colony Optimization demo finished!"
 
-    print "Ant Colony Optimization demo finished!"
-    print "Elapsed Time: %.2f min(s)" %((time.time() - t1) / 60)
+    print "%.2f msecs" %((time.time() - t1))
 
 
 if __name__ == "__main__":
