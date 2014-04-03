@@ -11,7 +11,8 @@ import time
 from model import AntColony
 from sys import argv
 
-__EXPECTED_ARGS = 4
+__EXTRA_ARGS = 1
+__MIN_ARGS = 4
 
 def __experiment(numCities, numAnts, maxTime, detailsEnabled=False):
     if detailsEnabled:
@@ -69,12 +70,19 @@ def __experiment(numCities, numAnts, maxTime, detailsEnabled=False):
 
 
 if __name__ == "__main__":
-    if not(len(argv) == __EXPECTED_ARGS):
-        print "Usage: python ./main.py numCities numAnts maxTime"
+    if len(argv) <= __MIN_ARGS + __EXTRA_ARGS \
+            and len(argv) >= __MIN_ARGS:
 
-    else:
         PARAMS = (int(argv[1]), int(argv[2]), int(argv[3]))
         numCities, numAnts, maxTime = PARAMS
+        showDetails = len(argv) == __MIN_ARGS + __EXTRA_ARGS
 
-        __experiment(numCities, numAnts, maxTime)
+        __experiment(numCities, numAnts, maxTime, showDetails)
+
+    else:
+        print "Usage: python ./main.py numCities numAnts maxTime [details]"
+        print "       details   -> Print details if specified (false by default)."
+        print "       numCities -> Number of nodes in the graph."
+        print "       numAnts   -> Population."
+        print "       maxTime   -> Max number of iterations."
 
