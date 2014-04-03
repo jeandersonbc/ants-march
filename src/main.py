@@ -2,7 +2,7 @@
 """
 Demo of Ant Colony Optimization (ACO) solving a Traveling Salesman Problem (TSP).
 
-Usage: python ./main.py numCities numAnts maxTime
+Run "python main.py" to see its usage.
 
 Contributors:
     Jeanderson Candido <http://jeandersonbc.github.io>
