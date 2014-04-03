@@ -5,7 +5,6 @@
 # Contributors:
 #     Jeanderson Candido <http://jeandersonbc.github.io>
 #
-import random
 import time
 from model import AntColony
 from sys import argv
