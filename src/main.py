@@ -29,10 +29,10 @@ def __experiment(numCities, numAnts, maxTime, detailsEnabled=False):
         print "Initializing dummy graph distances"
     dists = colony.make_graph_distances()
 
+    ants = colony.init_ants()
     if detailsEnabled:
         print "Initializing ants at random trails"
-    ants = colony.init_ants()
-    colony.show_ants(ants, dists)
+        colony.show_ants(ants, dists)
 
     bestTrail = colony.best_trail(ants, dists)
     bestLength = colony.length(bestTrail, dists)
