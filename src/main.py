@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-#
-# Demo of Ant Colony Optimization (ACO) solving a Traveling Salesman Problem (TSP).
-#
-# Contributors:
-#     Jeanderson Candido <http://jeandersonbc.github.io>
-#
+"""
+Demo of Ant Colony Optimization (ACO) solving a Traveling Salesman Problem (TSP).
+
+Usage: python ./main.py numCities numAnts maxTime
+
+Contributors:
+    Jeanderson Candido <http://jeandersonbc.github.io>
+"""
 import time
 from model import AntColony
 from sys import argv

@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-#
-# Contributors:
-#     Jeanderson Candido <http://jeandersonbc.github.io>
-#
+"""
+Model for the Ant Colony Optmization algorithm to solve the Travelling Salesman
+Problem.
+
+Contributors:
+    Jeanderson Candido <http://jeandersonbc.github.io>
+"""
 import random
 
 class AntColony:
-    """ Ant Colony Optmization to solve the Travelling Salesman Problem. """
+    """ The colony to solve the problem. """
 
     def __init__(self, nodes, population):
         """ Initializes the properties of this Colony.
