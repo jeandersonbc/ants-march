@@ -24,7 +24,7 @@ class AntColony:
         self.__Q = 2.0
 
         self.__nodes = nodes
-        self.__population = numAnts
+        self.__population = population
 
     def show_properties(self):
         """ Prints the pheromone properties. """
