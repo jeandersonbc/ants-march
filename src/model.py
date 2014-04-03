@@ -7,12 +7,15 @@ import random
 
 class AntColony:
 
-    def __init__(self):
+    def __init__(self, numCities, numAnts):
         # Pheromone properties
         self.__alpha = 3
         self.__beta = 2
         self.__rho = 0.01
         self.__Q = 2.0
+
+        self.__numCities = numCities
+        self.__numAnts = numAnts
 
     def show_properties(self):
         print "Pheromone influence (Alpha): %d" %(self.__alpha)
@@ -27,10 +30,9 @@ class AntColony:
         print "\n"
 
     def move_probs(self, k, cityX, visited, pheromones, dists):
-        numCities = len(pheromones)
-        probs = [0.0 for i in range(numCities)]
+        probs = [0.0 for i in range(self.__numCities)]
         total = 0.0
-        upperBoundFactor = 1.7976931348623157E+308 / (numCities * 100)
+        upperBoundFactor = 1.7976931348623157E+308 / (self.__numCities * 100)
         lowerBoundFactor = 0.0001
         for i in range(len(probs)):
             if i == cityX or visited[i]:
@@ -44,7 +46,7 @@ class AntColony:
                     probs[i] = upperBoundFactor
             total += probs[i]
 
-        return [(probs[i] / total) for i in range(numCities)]
+        return [(probs[i] / total) for i in range(self.__numCities)]
 
     def next_city(self, k, cityX, visited, pheromones, dists):
         probs = self.move_probs(k, cityX, visited, pheromones, dists)
@@ -58,13 +60,12 @@ class AntColony:
                 return i
 
     def build_trail(self, k, start, pheromones, dists):
-        numCities = len(pheromones)
-        trail = [0 for i in range(numCities)]
-        visited = [False for i in range(numCities)]
+        trail = [0 for i in range(self.__numCities)]
+        visited = [False for i in range(self.__numCities)]
 
         trail[0] = start
         visited[start] = True
-        for i in range(numCities-1):
+        for i in range(self.__numCities-1):
             cityX = trail[i]
             nextCity = self.next_city(k, cityX, visited, pheromones, dists)
             trail[i+1] = nextCity
@@ -72,9 +73,11 @@ class AntColony:
 
         return trail
 
-    def init_pheromones(self, numCities):
+    def init_pheromones(self):
         """ Initializes a matrix representing the pheromones. """
-        pheromones = [[0.0 for j in range(numCities)] for i in range(numCities)]
+        pheromones = [
+            [0.0 for j in range(self.__numCities)] for i in range(self.__numCities)
+        ]
         for i in range(len(pheromones)):
             for j in range(len(pheromones)):
                 pheromones[i][j] = 0.01
@@ -82,9 +85,8 @@ class AntColony:
         return pheromones
 
     def update_ants(self, ants, pheromones, dists):
-        numCities = len(pheromones)
         for k in range(len(ants)):
-            start = random.randint(0, numCities-1)
+            start = random.randint(0, self.__numCities-1)
             newTrail = self.build_trail(k, start, pheromones, dists)
             ants[k] = newTrail
 
@@ -147,12 +149,12 @@ class AntColony:
 
         return result
 
-    def random_trail(self, start, numCities):
-        trail = range(numCities)
+    def random_trail(self, start):
+        trail = range(self.__numCities)
 
         # Shuffle
-        for i in range(numCities):
-            r = random.randint(i, numCities-1)
+        for i in range(self.__numCities):
+            r = random.randint(i, self.__numCities-1)
             trail[r], trail[i] = trail[i], trail[r]
 
         # Start at 0
@@ -161,11 +163,11 @@ class AntColony:
 
         return trail
 
-    def init_ants(self, numAnts, numCities):
+    def init_ants(self, numAnts):
         ants = [[] for r in range(numAnts)]
         for k in range(numAnts):
-            start = random.randint(0, numCities-1)
-            ants[k] = self.random_trail(start, numCities)
+            start = random.randint(0, self.__numCities-1)
+            ants[k] = self.random_trail(start, self.__numCities)
 
         return ants
 
@@ -181,12 +183,12 @@ class AntColony:
             print "] len =", self.length(ants[i], dists)
         print ""
 
-    def make_graph_distances(self, numCities, max_dist=8):
-        dists = [[] for r in range(numCities)]
+    def make_graph_distances(self, max_dist=8):
+        dists = [[] for r in range(self.__numCities)]
         for i in range(len(dists)):
-            dists[i] = [0 for k in range(numCities)]
+            dists[i] = [0 for k in range(self.__numCities)]
         for i in range(len(dists)):
-            for j in range(i+1, numCities):
+            for j in range(i+1, self.__numCities):
                 d = random.randint(1, max_dist)
                 dists[i][j] = dists[j][i] = d
 

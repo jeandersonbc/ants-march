@@ -16,23 +16,23 @@ def __experiment(numCities, numAnts, maxTime):
     print "Number of cities: %d" %(numCities)
     print "Number of ants: %d" %(numAnts)
     print "Maximum time: %d\n" %(maxTime)
-    colony = AntColony()
+    colony = AntColony(numCities, numAnts)
     colony.show_properties()
 
     t1 = time.time()
 
     print "Initializing dummy graph distances"
-    dists = colony.make_graph_distances(numCities)
+    dists = colony.make_graph_distances()
 
     print "Initializing ants at random trails"
-    ants = colony.init_ants(numAnts, numCities)
+    ants = colony.init_ants(numAnts)
     colony.show_ants(ants, dists)
 
     bestTrail = colony.best_trail(ants, dists)
     bestLength = colony.length(bestTrail, dists)
 
     print "Initializing pheromone on trails"
-    pheromones = colony.init_pheromones(numCities)
+    pheromones = colony.init_pheromones()
 
     print "Starting...\n"
     print "Length\tTime\tGain"
