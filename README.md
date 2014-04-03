@@ -22,5 +22,3 @@ to compute all possibilities?
 
 * ``(N-1)! / 2`` is a very large number. Even if we had a computer capable to compute **10^60
 possibilites in a second**, we still wouldn't be able to find an optimal solution. 
-
-* Elegant algorithms are still better than powerful computers.
