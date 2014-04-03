@@ -7,6 +7,7 @@
 #
 import random
 import time
+from sys import argv
 
 # Influence of pheromone on direction (alpha) and of
 # adjacent node distances (beta)
@@ -16,6 +17,8 @@ _beta = 2
 # Pheromone increase (rho) e decrease (Q) factors
 _rho = 0.01
 _Q = 2.0
+
+__EXPECTED_ARGS = 4
 
 def display_trail(trail):
     for i in range(len(trail)):
@@ -150,15 +153,11 @@ def random_trail(start, numCities):
     # Shuffle
     for i in range(numCities):
         r = random.randint(i, numCities-1)
-        tmp = trail[r]
-        trail[r] = trail[i]
-        trail[i] = tmp
+        trail[r], trail[i] = trail[i], trail[r]
 
     # Start at 0
     idx = trail.index(start)
-    tmp = trail[0]
-    trail[0] = trail[idx]
-    trail[idx] = tmp
+    trail[idx], trail[0] = trail[0], trail[idx]
 
     return trail
 
@@ -182,35 +181,19 @@ def show_ants(ants, dists):
         print "] len =", length(ants[i], dists)
     print ""
 
-def make_graph_distances(numCities):
+def make_graph_distances(numCities, max_dist=8):
     dists = [[] for r in range(numCities)]
     for i in range(len(dists)):
         dists[i] = [0 for k in range(numCities)]
     for i in range(len(dists)):
         for j in range(i+1, numCities):
-            d = random.randint(1,8)
-            dists[i][j] = d
-            dists[j][i] = d
+            d = random.randint(1, max_dist)
+            dists[i][j] = dists[j][i] = d
 
     return dists
 
-
-def fact(n):
-    """ Computes factorial.
-    This is not used in the AOC problem.
-    """
-    if n == 1:
-        return 1
-    return n * fact(n - 1)
-
-if __name__ == "__main__":
-    t1 = time.time()
+def __experiment(numCities, numAnts, maxTime):
     print "Beginning Ant Colony Optimization demo\n"
-
-    numCities = 60
-    numAnts = 4
-    maxTime = 1000
-
     print "Number of cities: %d" %(numCities)
     print "Number of ants: %d" %(numAnts)
     print "Maximum time: %d\n" %(maxTime)
@@ -219,6 +202,7 @@ if __name__ == "__main__":
     print "Local node influence (Beta): %d" %(_beta)
     print "Pheromone evaporation coef (Rho): %.2f" %(_rho)
     print "Pheromone deposit factor (Q): %.2f\n" %(_Q)
+    t1 = time.time()
 
     print "Initializing dummy graph distances"
     dists = make_graph_distances(numCities)
@@ -254,11 +238,14 @@ if __name__ == "__main__":
     print "Ant Colony Optimization demo finished!"
     print "Elapsed Time: %.2f min(s)" %((time.time() - t1) / 60)
 
-    print ""
-    print "Hypothetical super computer"
-    print "1 * 10^60 possibilities per second"
-    print "N = %d cities" %numCities
-    tenTo60 = 1000000000000000000000000000000000000000000000000000000000000
-    result = fact(numCities-1) >> 1
-    print "(N-1)! / 2 = %d possibilities..." %(result)
-    print "Required time: %d Years!" %(result / tenTo60 / 30758400)
+
+if __name__ == "__main__":
+    if not(len(argv) == __EXPECTED_ARGS):
+        print "Usage: python ./main.py numCities numAnts maxTime"
+
+    else:
+        PARAMS = (int(argv[1]), int(argv[2]), int(argv[3]))
+        numCities, numAnts, maxTime = PARAMS
+
+        __experiment(numCities, numAnts, maxTime)
+
