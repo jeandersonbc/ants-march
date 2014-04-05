@@ -128,12 +128,16 @@ class AntColony:
 
     def make_graph_distances(self, max_dist=8):
         """ Makes and return a matrix representing distances in the field. """
+
+        dice = random.Random()
+        dice.seed(1234)
+
         dists = [[] for r in range(self.__nodes)]
         for i in range(len(dists)):
             dists[i] = [0 for k in range(self.__nodes)]
         for i in range(len(dists)):
             for j in range(i+1, self.__nodes):
-                d = random.randint(1, max_dist)
+                d = dice.randint(1, max_dist)
                 dists[i][j] = dists[j][i] = d
 
         return dists

@@ -1,5 +1,7 @@
 # Automation script
 #
+# Number of Repetitions: 5
+#
 # Factors:
 #     1) Colony Population: 1, 2, 3, 4, 5
 #     2) Number of Nodes:   10, 30, 60
@@ -11,29 +13,28 @@
 # Contributors:
 #     Jeanderson Candido <http://jeandersonbc.github.io>
 
-# Helper function to customize output
-function getColor($p) {
-    if ($p % 2 -eq 0) { return [System.ConsoleColor]::cyan }
-    return [System.ConsoleColor]::darkcyan
-}
-
 write-host "Checking source path..." -noNewLine
 if (test-path ../src/main.py) {
     write-host " main.py found!" -foregroundColor green 
-    write-host "--------------------------------------"
 
     $pop = @(1, 2, 3, 4, 5)
     $nodes = @(10, 30, 60)
+    $repetitions = 5
     $maxTime = 1000
 
-    write-host ("Pop", "Nodes", "Len", "Time (secs)") -Separator "`t"
-    foreach ($p in $pop) {
-        foreach ($n in $nodes) {
-            $output = & python ../src/main.py $n $p $maxTime
+    write-host "Running experiment... take a sit and relax :)"
+    for ($id=1; $id -le $repetitions; $id++) {
+        write-host "Running #$id... " -noNewLine
+        foreach ($p in $pop) {
+            foreach ($n in $nodes) {
+                $log = & python ../src/main.py $id $n $p $maxTime
 
-            $color = getColor($p)
-            write-host ($p, $n, $output) -Separator "`t" -foregroundColor $color
+                # The log file has the following format:
+                # Exp ID, Population, Nodes, Length, Iteration, Elapsed Time
+                set-content -Encoding UTF8 $p-$n-$id.txt $log
+            }
         }
+        write-host "Ok!" -foregroundColor cyan
     }
     write-host "`nFinished!" -foregroundColor green
 
