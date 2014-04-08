@@ -61,6 +61,14 @@ regression.chart.Best.Length(summarized.data[summarized.data$Nodes == 30, ])
 regression.chart.Best.Length(summarized.data[summarized.data$Nodes == 30 & summarized.data$Population != 2, ])
 regression.chart.Best.Length(summarized.data[summarized.data$Nodes == 60, ])
 
+png(file="regression-chart-best-length.png")
+regression.chart.Best.Length(summarized.data)
+dev.off()
+
+png(file="regression-chart-best-length-60.png")
+regression.chart.Best.Length(summarized.data[summarized.data$Nodes == 60, ])
+dev.off()
+
 # Best length x Elapsed.Time
 
 regression.chart.Elapsed.Time <- function(data)
@@ -76,6 +84,14 @@ regression.chart.Elapsed.Time(summarized.data[summarized.data$Nodes == 30, ])
 regression.chart.Elapsed.Time(summarized.data[summarized.data$Nodes == 30 & summarized.data$Population != 2, ])
 regression.chart.Elapsed.Time(summarized.data[summarized.data$Nodes == 60, ])
 
+png(file="regression-chart-elapsed-time.png")
+regression.chart.Elapsed.Time(summarized.data)
+dev.off()
+
+png(file="regression-chart-elapsed-time-60.png")
+regression.chart.Elapsed.Time(summarized.data[summarized.data$Nodes == 60, ])
+dev.off()
+
 # Elapsed.Time x Nodes X Population
 
 chart.Elapsed.Time.Iterations <- function(data)
@@ -89,3 +105,10 @@ chart.Elapsed.Time.Iterations(summarized.data[summarized.data$Nodes == "10",])
 chart.Elapsed.Time.Iterations(summarized.data[summarized.data$Nodes == "30",])
 chart.Elapsed.Time.Iterations(summarized.data[summarized.data$Nodes == "60",])
 
+png(file="time-iterations-chart.png")
+chart.Elapsed.Time.Iterations(summarized.data)
+dev.off()
+
+png(file="time-iterations-chart-60.png")
+chart.Elapsed.Time.Iterations(summarized.data[summarized.data$Nodes == "60",])
+dev.off()
